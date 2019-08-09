@@ -1,8 +1,11 @@
 
 #=========================================================
 # https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#image-relationships
+#  docker run -p 8888:8888/tcp jupyter/scipy-notebook start-notebook.sh
 #=========================================================
 FROM jupyter/scipy-notebook
+
+
 
 USER root
 
@@ -142,82 +145,50 @@ RUN apt-get update -qq && apt-get -yq --no-install-recommends install \
   libsasl2-dev
 
 RUN Rscript -e 'install.packages(c("tidyverse", "dplyr", "devtools", "formatR", "remotes", "selectr", "caTools", "BiocManager"))'
-  # && install2.r --error \
-  #   --deps TRUE \
-  #   tidyverse \
-  #   dplyr \
-  #   devtools \
-  #   formatR \
-  #   remotes \
-  #   selectr \
-  #   caTools \
-  #   BiocManager
 
-# RUN apt-get -y install default-libmysqlclient-dev mysql-server
+RUN apt-get -y install default-libmysqlclient-dev libmysqlclient-dev mysql-server
 
 #=========================================================
 # https://hub.docker.com/r/rocker/geospatial/dockerfile
 #=========================================================
 
-# RUN apt-get update \
-#   && apt-get install -y --no-install-recommends \
-#     lbzip2 \
-#     default-libmysqlclient-dev \
-#     libfftw3-dev \
-#     libgdal-dev \
-#     libgeos-dev \
-#     libgsl0-dev \
-#     libgl1-mesa-dev \
-#     libglu1-mesa-dev \
-#     libhdf4-alt-dev \
-#     libhdf5-dev \
-#     libjq-dev \
-#     liblwgeom-dev \
-#     libpq-dev \
-#     libproj-dev \
-#     libprotobuf-dev \
-#     libnetcdf-dev \
-#     libsqlite3-dev \
-#     libudunits2-dev \
-#     netcdf-bin \
-#     postgis \
-#     protobuf-compiler \
-#     sqlite3 \
-#     tk-dev \
-#     unixodbc-dev \
-#   && install2.r --error \
-#       RColorBrewer \
-#       RandomFields \
-#       RNetCDF \
-#       classInt \
-#       deldir \
-#       gstat \
-#       hdf5r \
-#       lidR \
-#       mapdata \
-#       maptools \
-#       mapview \
-#       ncdf4 \
-#       proj4 \
-#       raster \
-#       rgdal \
-#       rgeos \
-#       rlas \
-#       sf \
-#       sp \
-#       spacetime \
-#       spatstat \
-#       spatialreg \
-#       spdep \
-#       geoR \
-#       geosphere \
-#       ## from bioconductor
-#       && R -e "BiocManager::install('rhdf5')"
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    lbzip2 \
+    default-libmysqlclient-dev \
+    libfftw3-dev \
+    libgdal-dev \
+    libgeos-dev \
+    libgsl0-dev \
+    libgl1-mesa-dev \
+    libglu1-mesa-dev \
+    libhdf4-alt-dev \
+    libhdf5-dev \
+    libjq-dev \
+    liblwgeom-dev \
+    libpq-dev \
+    libproj-dev \
+    libprotobuf-dev \
+    libnetcdf-dev \
+    libsqlite3-dev \
+    libudunits2-dev \
+    netcdf-bin \
+    postgis \
+    protobuf-compiler \
+    sqlite3 \
+    tk-dev \
+    unixodbc-dev
+  
+RUN Rscript -e 'install.packages(c("RColorBrewer", "RandomFields", "RNetCDF", "classInt", "deldir"))' && \
+  Rscript -e 'install.packages(c("gstat", "hdf5r", "lidR", "mapdata", "maptools", "mapview"))' && \
+  Rscript -e 'install.packages(c("ncdf4", "proj4", "raster", "rgdal", "rgeos", "rlas"))' && \
+  Rscript -e 'install.packages(c("sf", "sp", "spacetime", "spatstat", "spatialreg", "spdep"))' && \
+  Rscript -e 'install.packages(c("spdep", "geoR", "geosphere"))' && \
+  Rscript -e 'BiocManager::install("rhdf5")'
 
-
-# #=========================================================
-# # Packages I use
-# #=========================================================
+#=========================================================
+# Packages I use
+#=========================================================
 
 # RUN apt-get update -qq && apt-get -y --no-install-recommends install \ 
 #   libc6 \
@@ -225,60 +196,36 @@ RUN Rscript -e 'install.packages(c("tidyverse", "dplyr", "devtools", "formatR", 
 #   bison \
 #   flex \
 #   graphviz \
-#   && install2.r --error \
-#     --deps TRUE \
-#     RcppEigen \
-#     ggplot2 \
-#     Cairo \
-#     evaluate \
-#     highr markdown yaml knitr rmarkdown \
-#     htmltools RColorBrewer \
-#     roxygen2 testthat \
-#     snow Rmpi doSNOW foreach \
-#     DependenciesGraph Rdpack\
-#     RSQLite \
-#     # arrow reticulate \
-#     feather \
-#     httr jsonlite \
-#     lubridate readxl xts \
-#     stringr compare splitstackshape \
-#     reshape2 fuzzyjoin scales automap \
-#     raster lmomRFA lmomco gdata ncdf4 \
-#     maps ggmap usmap igraph leaflet leaflet.extras geojsonio \
-#     copula copBasic TwoCop \
-#     RFOC circular movMF VecStatGraphs2D \
-#     distr fitdistrplus actuar \
-#     polynom splines squash \
-#     mlbench gower cluster \
-#     randomForest \
-#     corrplot lpSolve digest glue \
-#     rvest \
-#     ptinpoly misc3d geometry
+#   libunwind-dev && \
+#   apt-get update -y
 
-# # https://cran.rstudio.com/web/packages/littler/vignettes/littler-examples.html#installgithubr:_github_install
-# # installGithub.r RcppCore/RcppEigen
+# RUN Rscript -e 'install.packages(c("RcppEigen", "ggplot2", "Cairo", "evaluate"))' && \
+#   Rscript -e 'install.packages(c("highr", "markdown", "yaml", "knitr", "rmarkdown", "htmltools"))' && \
+#   Rscript -e 'install.packages(c("roxygen2", "testthat", "snow", "Rmpi", "doSNOW", "foreach"))' && \
+#   Rscript -e 'install.packages(c("DependenciesGraph", "Rdpack", "RSQLite", "feather", "httr", "jsonlite"))' && \
+#   Rscript -e 'install.packages(c("lubridate", "readxl", "xts", "stringr", "compare", "splitstackshape"))' && \
+#   Rscript -e 'install.packages(c("reshape2", "fuzzyjoin", "scales", "automap", "lmomRFA", "lmomco"))' && \
+#   Rscript -e 'install.packages(c("gdata", "maps", "ggmap", "leaflet", "leaflet.extras", "geojsonio"))' && \
+#   Rscript -e 'install.packages(c("copula", "copBasic", "TwoCop", "RFOC", "circular", "movMF"))' && \
+#   Rscript -e 'install.packages(c("VecStatGraphs2D", "distr", "fitdistrplus", "actuar", "polynom", "splines"))' && \
+#   Rscript -e 'install.packages(c("squash", "mlbench", "gower", "cluster", "dtw", "randomForest"))' && \
+#   Rscript -e 'install.packages(c("corrplot", "lpSolve", "digest", "glue", "rvest", "ptinpoly"))' && \
+#   Rscript -e 'install.packages(c("misc3d", "geometry"))'
 
-# # Interaction with Python within Jupyter Notebook
-# RUN apt-get update -qq && apt-get -y --no-install-recommends install \ 
-#   && install2.r --error \
-#     --deps TRUE IRkernel
-RUN Rscript -e 'install.packages("IRkernel")' && \
-  Rscript -e "IRkernel::installspec(user = FALSE)"
+# RUN Rscript -e 'install.packages("IRkernel")' && \
+#   Rscript -e "IRkernel::installspec(user = FALSE)"
 
-# RUN apt-get update -qq && apt-get -y --no-install-recommends install \ 
-#   && installGithub.r mathphysmx/cleanTable \
-#   && installGithub.r mathphysmx/gmshR \
-#   && installGithub.r mathphysmx/percolation \
-#   && installGithub.r mathphysmx/empiricalDistribution \
-#   && installGithub.r mathphysmx/inverseFunction
-#   # && installGithub.r mathphysmx/bernstein
+# RUN Rscript -e 'devtools::install_github("mathphysmx/cleanTable")' && \
+#   Rscript -e 'devtools::install_github("mathphysmx/gmshR")' && \
+#   Rscript -e 'devtools::install_github("mathphysmx/percolation")' && \
+#   Rscript -e 'devtools::install_github("mathphysmx/empiricalDistribution")' && \
+#   Rscript -e 'devtools::install_github("mathphysmx/inverseFunction")' && \
+#   Rscript -e 'devtools::install_github("mathphysmx/bernstein", build_vignettes = TRUE)'
 
-# RUN Rscript -e 'devtools::install_github("mathphysmx/bernstein", build_vignettes = TRUE)'
+CMD ["bash"]
 
-# CMD ["bash"]
-
-# #=========================================================
-# # https://hub.docker.com/r/rocker/ml/dockerfile
-# #=========================================================
+#=========================================================
+# https://hub.docker.com/r/rocker/ml/dockerfile
+#=========================================================
 
 
