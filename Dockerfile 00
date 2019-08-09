@@ -1,0 +1,74 @@
+FROM ubuntu:latest
+
+##
+# https://hub.docker.com/r/rocker/r-ubuntu/dockerfile
+# https://hub.docker.com/r/sboysel/geospatial/dockerfile
+# https://hub.docker.com/r/rocker/geospatial/dockerfile
+# https://hub.docker.com/r/rocker/verse/dockerfile
+# https://hub.docker.com/r/rocker/tidyverse/dockerfile
+# https://github.com/rocker-org/r-parallel/blob/master/Dockerfile
+
+# https://hub.docker.com/r/rocker/r-base/dockerfile # DEBINAN
+# https://hub.docker.com/r/rocker/r-ver/dockerfile
+
+MAINTAINER Francisco Mendoza <mentofran@gmail.com>
+
+RUN ["apt-get","update","-y"]
+
+# 2. Add pre-required packages
+
+##---## https://serverfault.com/questions/949991/how-to-install-tzdata-on-a-ubuntu-docker-image/949998
+## set noninteractive installation
+ENV export DEBIAN_FRONTEND=noninteractive
+# RUN apt-get update \
+#   && apt-get install -y git
+#install tzdata package
+RUN apt-get install -y tzdata
+# set your timezone
+RUN ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+RUN dpkg-reconfigure --frontend noninteractive tzdata
+
+###!!!
+## https://github.com/phusion/baseimage-docker/issues/319
+# ENV DEBIAN_FRONTEND=noninteractive
+# RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apt-utils
+
+## temp fix to APT-KEY error in Docker
+## https://stackoverflow.com/questions/53935949/apt-key-fails-recently-inside-docker
+# RUN sed -i "s%{GPG_EXE}\")' --%{GPG_EXE}\")' --batch --%g" /usr/bin/apt-key
+# RUN apt-get update \
+#    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install apt-utils
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+
+
+## https://linuxize.com/post/how-to-install-r-on-ubuntu-18-04/
+RUN apt-get install -y apt-transport-https software-properties-common
+# RUN apt-key adv --no-tty --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 RUN
+# RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran36/'
+RUN apt-get update
+RUN apt-get install -y r-base
+RUN apt-get install -y build-essential
+# RUN ["apt-get","install","-y", "r-base-dev"]
+
+
+
+
+
+
+# Run bash on container launch
+CMD ["bash"]
+
+
+## Instructions
+
+
+## 
+## docker run -p 10000:8888 jupyter/datascience-notebook:latest
+
+
+## Install R and its packages
+# RUN bash tmp.bash
+##RUN apt-get -y update
+## RUN apt-get -y install r-base libapparmor1 libcurl4-gnutls-dev libxml2-dev libssl-dev gdebi-core
+
+#RUN Rscript tmp.R
