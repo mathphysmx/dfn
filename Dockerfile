@@ -5,8 +5,6 @@
 #=========================================================
 FROM jupyter/scipy-notebook
 
-
-
 USER root
 
 ### Doc
@@ -54,10 +52,10 @@ RUN apt-get update
 ## Set a default user. Available via runtime flag `--user docker` 
 ## Add user to 'staff' group, granting them write privileges to /usr/local/lib/R/site.library
 ## User should also have & own a home directory (for rstudio or linked volumes to work properly). 
-RUN useradd docker \
-	&& mkdir /home/docker \
-	&& chown docker:docker /home/docker \
-	&& addgroup docker staff
+# RUN useradd docker \
+# 	&& mkdir /home/docker \
+# 	&& chown docker:docker /home/docker \
+# 	&& addgroup docker staff
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
@@ -146,45 +144,45 @@ RUN apt-get update -qq && apt-get -yq --no-install-recommends install \
 
 RUN Rscript -e 'install.packages(c("tidyverse", "dplyr", "devtools", "formatR", "remotes", "selectr", "caTools", "BiocManager"))'
 
-RUN apt-get -y install default-libmysqlclient-dev libmysqlclient-dev mysql-server
+# RUN apt-get -y install default-libmysqlclient-dev libmysqlclient-dev mysql-server
 
 #=========================================================
 # https://hub.docker.com/r/rocker/geospatial/dockerfile
 #=========================================================
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-    lbzip2 \
-    default-libmysqlclient-dev \
-    libfftw3-dev \
-    libgdal-dev \
-    libgeos-dev \
-    libgsl0-dev \
-    libgl1-mesa-dev \
-    libglu1-mesa-dev \
-    libhdf4-alt-dev \
-    libhdf5-dev \
-    libjq-dev \
-    liblwgeom-dev \
-    libpq-dev \
-    libproj-dev \
-    libprotobuf-dev \
-    libnetcdf-dev \
-    libsqlite3-dev \
-    libudunits2-dev \
-    netcdf-bin \
-    postgis \
-    protobuf-compiler \
-    sqlite3 \
-    tk-dev \
-    unixodbc-dev
+# RUN apt-get update \
+#   && apt-get install -y --no-install-recommends \
+#     lbzip2 \
+#     default-libmysqlclient-dev \
+#     libfftw3-dev \
+#     libgdal-dev \
+#     libgeos-dev \
+#     libgsl0-dev \
+#     libgl1-mesa-dev \
+#     libglu1-mesa-dev \
+#     libhdf4-alt-dev \
+#     libhdf5-dev \
+#     libjq-dev \
+#     liblwgeom-dev \
+#     libpq-dev \
+#     libproj-dev \
+#     libprotobuf-dev \
+#     libnetcdf-dev \
+#     libsqlite3-dev \
+#     libudunits2-dev \
+#     netcdf-bin \
+#     postgis \
+#     protobuf-compiler \
+#     sqlite3 \
+#     tk-dev \
+#     unixodbc-dev
   
-RUN Rscript -e 'install.packages(c("RColorBrewer", "RandomFields", "RNetCDF", "classInt", "deldir"))' && \
-  Rscript -e 'install.packages(c("gstat", "hdf5r", "lidR", "mapdata", "maptools", "mapview"))' && \
-  Rscript -e 'install.packages(c("ncdf4", "proj4", "raster", "rgdal", "rgeos", "rlas"))' && \
-  Rscript -e 'install.packages(c("sf", "sp", "spacetime", "spatstat", "spatialreg", "spdep"))' && \
-  Rscript -e 'install.packages(c("spdep", "geoR", "geosphere"))' && \
-  Rscript -e 'BiocManager::install("rhdf5")'
+# RUN Rscript -e 'install.packages(c("RColorBrewer", "RandomFields", "RNetCDF", "classInt", "deldir"))' && \
+#   Rscript -e 'install.packages(c("gstat", "hdf5r", "lidR", "mapdata", "maptools", "mapview"))' && \
+#   Rscript -e 'install.packages(c("ncdf4", "proj4", "raster", "rgdal", "rgeos", "rlas"))' && \
+#   Rscript -e 'install.packages(c("sf", "sp", "spacetime", "spatstat", "spatialreg", "spdep"))' && \
+#   Rscript -e 'install.packages(c("spdep", "geoR", "geosphere"))' && \
+#   Rscript -e 'BiocManager::install("rhdf5")'
 
 #=========================================================
 # Packages I use
@@ -223,6 +221,8 @@ RUN Rscript -e 'install.packages(c("RColorBrewer", "RandomFields", "RNetCDF", "c
 #   Rscript -e 'devtools::install_github("mathphysmx/bernstein", build_vignettes = TRUE)'
 
 CMD ["bash"]
+
+USER $NB_UID
 
 #=========================================================
 # https://hub.docker.com/r/rocker/ml/dockerfile
